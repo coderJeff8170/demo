@@ -5,7 +5,7 @@ package com.semanticsquare.basics;
  */
 public class StudentUtil {
 
-    public static double[] calculateGPA(int[] studentIdList, char[][] studentsGrades) {
+    public static double[] calculateGPA(int[] studentIdList, char[][] studentsGrades) throws MissingGradeException {
         // Your code: throw IllegalArgumentException with the message that lengths of input arrays are out-of-sync
         if(studentIdList.length != studentsGrades.length) {
             throw new IllegalArgumentException("studentIdList & studentsGrades are out-of-sync. studentIdList.length: " + studentIdList.length + ", studentsGrades.length: " + studentsGrades.length);
@@ -23,8 +23,10 @@ public class StudentUtil {
                 } else if (studentsGrades[i][j] == 'C') {
                     gpa += 2.0;
                 } else if (studentsGrades[i][j] == ' ') {
+                    System.out.println("grade is a blank!");
                     // student is yet to receive a grade
                     // Your code: throw checked exception MissingGradeException with student ID
+                    throw new MissingGradeException(studentIdList[i]);
                 }
             }
 
@@ -35,14 +37,21 @@ public class StudentUtil {
     }
 
 
-    public static int[] getStudentsByGPA(double lower, double higher, int[] studentIdList, char[][] studentsGrades) {
+    public static int[] getStudentsByGPA(double lower, double higher, int[] studentIdList, char[][] studentsGrades) throws InvalidDataException {
         if (lower < 0 || higher < 0 || lower > higher) {
             return null;
         }
 
         double[] gpaList = new double[studentIdList.length];
         // Your code: catch MissingGradeException and re-throw runtime exception InvalidDataException initialized with the cause MissingGradeException
-        gpaList = calculateGPA(studentIdList, studentsGrades);
+        try {
+            gpaList = calculateGPA(studentIdList, studentsGrades);
+        } catch (MissingGradeException e) {
+
+            InvalidDataException e1 = new InvalidDataException(e);
+//            e1.initCause(e);
+            throw e1;
+        }
 
 
         int count = 0;
@@ -61,6 +70,17 @@ public class StudentUtil {
         }
 
         return result;
+    }
+
+    /*------------------------ Driver -----------------------------*/
+
+    public static void main(String[] args) {
+        try {
+            getStudentsByGPA(2.0, 4.0, new int[] {1001, 1002}, new char[][]{{'A', 'C', 'B', ' '}, {'A', 'C', 'B', 'A'}});
+        } catch (InvalidDataException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Jeff");
     }
 
 
