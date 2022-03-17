@@ -7,7 +7,9 @@ public class StudentUtil {
 
     public static double[] calculateGPA(int[] studentIdList, char[][] studentsGrades) {
         // Your code: throw IllegalArgumentException with the message that lengths of input arrays are out-of-sync
-
+        if(studentIdList.length != studentsGrades.length) {
+            throw new IllegalArgumentException("studentIdList & studentsGrades are out-of-sync. studentIdList.length: " + studentIdList.length + ", studentsGrades.length: " + studentsGrades.length);
+        }
         double[] gpaList = new double[studentIdList.length];
 
         for (int i = 0; i < studentsGrades.length; i++) {
