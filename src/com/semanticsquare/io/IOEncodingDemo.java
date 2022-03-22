@@ -3,7 +3,7 @@ package com.semanticsquare.io;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-public class IODemo {
+public class IOEncodingDemo {
     public static void applyEncoding() {
         System.out.println("\nInside applyEncoding ...");
         //System.out.println("Default Character Encoding: " + System.getProperty("file.encoding"));
