@@ -1,12 +1,34 @@
 package com.semanticsquare.io;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class IOStreamsDemo {
     static String inFileStr = "src/walden.jfif";
     static String outFileStr = "src/walden-out.jpg";
+
+    //by convention, static nested classes should precede all static methods
+    public static class SerializableDemo implements Serializable {
+        //use a svUID to avoid problems with versioning, but be careful when 'evolving' a class...
+        //static final long serialVersionUID = 8882416210786165012L;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        private transient int id = 4;
+        public int getId() { return id; }
+
+//        private String gender;
+
+    }
 
     public static void fileCopyNoBuffer() {
         System.out.println("\nInside fileCopyNoBuffer ...");
@@ -162,14 +184,108 @@ public class IOStreamsDemo {
             System.out.println(dirItem);
     }
 
+    /**
+     * Internally in memory Java always stores a char as UTF-16. Period.
+     */
+
+
+
+    public static void applyEncoding() {
+        System.out.println("\nInside applyEncoding ...");
+        //System.out.println("Default Character Encoding: " + System.getProperty("file.encoding"));
+
+        // Ensure Eclipse property is set as UTF8
+        printEncodingDetails("luke");
+        printEncodingDetails("€"); // Euro (Reference: http://stackoverflow.com/questions/34922333/how-does-java-fit-a-3-byte-unicode-character-into-a-char-type)
+        printEncodingDetails("\u1F602"); // Non-BMP Unicode Code Point ~ Tears of Joy Emoji (one of Smiley graphic symbol)
+    }
+
+    public static void encodingSync() {
+		/*try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("encoding"), "UTF-16BE"))){
+			System.out.println(br.readLine());
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+
+        try {
+            //System.out.println(new String("€".getBytes("UTF-8"), "UTF-16BE"));
+            System.out.println(new String("a".getBytes("US-ASCII"), "UTF-16BE"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+
+    private static void printEncodingDetails(String symbol) {
+        System.out.println("\nSymbol: " + symbol);
+        try {
+            System.out.println("ASCII: " + Arrays.toString(symbol.getBytes("US-ASCII")));
+            System.out.println("ISO-8859-1: " + Arrays.toString(symbol.getBytes("ISO-8859-1")));
+            System.out.println("UTF-8: " + Arrays.toString(symbol.getBytes("UTF-8")));
+            System.out.println("UTF-16: " + Arrays.toString(symbol.getBytes("UTF-16")));
+            System.out.println("UTF-16 BE: " + Arrays.toString(symbol.getBytes("UTF-16BE")));
+            System.out.println("UTF-16 LE: " + Arrays.toString(symbol.getBytes("UTF-16LE")));
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    public void doSerialization() {
+        System.out.println("\nInside doSerialization...");
+
+        SerializableDemo serializableDemo = new SerializableDemo();
+        serializableDemo.setName("Java");
+        System.out.println("name (before serialization): " + serializableDemo.getName());
+        System.out.println("id (before serialization): " + serializableDemo.getId());
+
+        try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("serial.ser")))) {
+            out.writeObject(serializableDemo);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void doDeserialization() {
+        System.out.println("\nInside doDeserialization ...");
+
+        try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream("serial.ser")))) {
+            SerializableDemo serializedObj = (SerializableDemo) in.readObject();
+            System.out.println("name (after deserialization): " + serializedObj.getName());
+            System.out.println("id (after deserialization): " + serializedObj.getId());
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         //fileCopyNoBuffer();
 //      fileCopyWithBufferAndArray();
 //      System.out.println(System.getProperty("file.encoding"));
 //        readFromStandardInput();
-        System.out.println(System.getProperty("user.dir"));//can always get root directory in this manner
-        fileMethodsDemo();
-        dirFilter(true);
+//        System.out.println(System.getProperty("user.dir"));//can always get root directory in this manner
+//        fileMethodsDemo();
+//        dirFilter(true);
+ //       applyEncoding();
+
+        //Serialization
+        /* if(args.length > 0 && args[0].equals("true")) {
+            new IOStreamsDemo().doSerialization();
+        }
+        new IOStreamsDemo().doDeserialization();
+        */
+        encodingSync();
     }
 
 
