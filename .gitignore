@@ -1,3 +1,5 @@
 .idea/
 demo.iml
 /out
+/testdir
+temp.txt
