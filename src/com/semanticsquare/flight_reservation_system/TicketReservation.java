@@ -37,6 +37,7 @@ public class TicketReservation {
             isPassengerAdded = true;
         } else if (waitingList.size() < WAITINGLIST_LIMIT) {
             //add passenger
+            System.out.println("adding passenger to wait list!");
             waitingList.add(passenger);
             // update boolean to true
             isPassengerAdded = true;
@@ -106,15 +107,39 @@ public class TicketReservation {
     public static void main (String[]  args) {
 
         TicketReservation reservation = new TicketReservation();
-        System.out.println(reservation.bookFlight("Jeff", "Andrews", 52,
-                "male", "business", "C9"));
-        System.out.println(        reservation.bookFlight("Jenn", "Andrews", 42,
-                "female", "economy", "A8"));
-        System.out.println(        reservation.bookFlight("Pookie", "Andrews", 15,
-                "female", "economy", "A7"));
+        reservation.bookFlight("Jeff", "Andrews", 52,
+                "male", "business", "C9");
+        reservation.bookFlight("Jenn", "Andrews", 42,
+                "female", "economy", "Z8");
+        reservation.bookFlight("Pookie", "Andrews", 15,
+                "female", "economy", "A7");
+        reservation.bookFlight("Jeff", "Andrews", 52,
+                "male", "business", "C5");
+        reservation.bookFlight("Jenn", "Andrews", 42,
+                "female", "economy", "A3");
+        reservation.bookFlight("Pookie", "Andrews", 15,
+                "female", "economy", "Q7");
+        reservation.bookFlight("Jeff", "Andrews", 52,
+                "male", "business", "C6");
+        reservation.bookFlight("Jenn", "Andrews", 42,
+                "female", "economy", "B8");
+        reservation.bookFlight("Pookie", "Andrews", 15,
+                "female", "economy", "J7");
+        reservation.bookFlight("Jeff", "Andrews", 52,
+                "male", "business", "C0");
+        reservation.bookFlight("Jenn", "Andrews", 42,
+                "female", "economy", "J1");
+        reservation.bookFlight("Pookie", "Andrews", 15,
+                "female", "economy", "M7");
 //        System.out.println(reservation.confirmedList.get(0).getFirstName());
-        System.out.println(reservation.cancel("C9"));
+//        System.out.println(reservation.cancel("C9"));
+//        System.out.println(reservation.cancel("J1"));
+        System.out.println("confirmed list:");
         for (Passenger passenger : reservation.confirmedList) {
+            System.out.print(passenger.getFirstName() + " ");
+        }
+        System.out.println("\nwaiting list");
+        for (Passenger passenger : reservation.waitingList) {
             System.out.print(passenger.getFirstName() + " ");
         }
     }
