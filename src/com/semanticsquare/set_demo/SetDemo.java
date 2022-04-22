@@ -31,13 +31,13 @@ public class SetDemo {
         Book book4 = new Book("Effective Java", "Joshua Bloch", 2008);
         Book book5 = new Book("The Last Lecture", "Randy Pausch", 2008);
 
-//        Set<Book> books = new TreeSet<>(comparator);
-        Set<Book> books;
-        if(comparator == null) {
-            books = new TreeSet<>();
-        } else {
-            books = new TreeSet<>(comparator);
-        }
+        Set<Book> books = new TreeSet<>(comparator);
+//        Set<Book> books;
+//        if(comparator == null) {
+//            books = new TreeSet<>();
+//        } else {
+//            books = new TreeSet<>(comparator);
+//        }
         books.add(book1);
         books.add(book2);
         books.add(book3);
@@ -54,7 +54,7 @@ public class SetDemo {
 
     public static void main(String[] args) {
         //hashSetDemo();
-        treeSetDemo(null);
+        treeSetDemo(new PubDateDescComparator());
     }
 
 }
