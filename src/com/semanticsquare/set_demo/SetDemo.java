@@ -54,7 +54,7 @@ public class SetDemo {
 
     public static void main(String[] args) {
         //hashSetDemo();
-        treeSetDemo(new PubDateDescComparator());
+        treeSetDemo(new PubDateAscComparator());
     }
 
 }

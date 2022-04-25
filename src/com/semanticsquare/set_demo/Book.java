@@ -1,9 +1,57 @@
 package com.semanticsquare.set_demo;
 
+import java.util.Comparator;
 public class Book implements Comparable {
     private String title;
     private String author;
     private int year;
+
+    // Your anonymous class should be defined in the following statement
+//     public static final Comparator<Book> TITLE_COMPARATOR = new Book.PubDateComparators.PubDateAscComparator();
+    public static final Comparator<Book> TITLE_COMPARATOR = new TitleComparator();
+
+    public static class TitleComparator implements Comparator<Book> {
+         public int compare(Book o1, Book o2){
+             return o1.getTitle().compareTo(o2.getTitle());
+         }
+    }
+
+    // Your public static member class PubDateComparators can go here!
+    public static class PubDateComparators {
+
+        public static class PubDateAscComparator implements Comparator<Book> {
+            @Override
+            public int compare(Book o1, Book o2) {
+
+//                int result = o1.getTitle().compareTo(o2.getTitle());
+                int result = TITLE_COMPARATOR.compare(o1, o2);
+
+                if(o1.getYear() > o2.getYear()) {
+                    result = 1;
+                } else if (o1.getYear() < o2.getYear()) {
+                    result = -1;
+                }
+                return result;
+            }
+        }
+
+        public static class PubDateDescComparator implements Comparator<Book> {
+
+            @Override
+            public int compare(Book o1, Book o2) {
+
+                int result = TITLE_COMPARATOR.compare(o1, o2);
+
+                if(o1.getYear() > o2.getYear()) {
+                    result = -1;
+                } else if (o1.getYear() < o2.getYear()) {
+                    result = 1;
+                }
+                return result;
+            }
+
+        }
+    }
 
     public String getTitle() {
         return title;
@@ -86,5 +134,4 @@ public class Book implements Comparable {
     public int compareTo(Object book) {
         return getTitle().compareTo(((Book)book).getTitle()); // utilizing String’s compareTo
     }
-
 }
