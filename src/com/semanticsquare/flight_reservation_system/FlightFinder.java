@@ -1,6 +1,6 @@
 package com.semanticsquare.flight_reservation_system;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,19 +23,43 @@ public class FlightFinder {
                                                   String departureCity, String arrivalCity, String finalArrivalCity,
                                                   String departureCityTimeZone, String arrivalCityTimeZone) {
 
-        List<NavigableSet<Flight>> result = new ArrayList<>();
+        List<NavigableSet<Flight>> result = new ArrayList<>();//this is what gets returned eventually, a list of
+        //navigable sets, one for departing flights and one for connecting flights
 
         // Step 1: Construct ZonedDateTime objects to represent User-specified time interval when flights depart
-
         // Your code
 
+        //preferredStart
+        LocalTime prefDepartureStartTime = LocalTime.of(preferredDepartureStartHour, 0, 0);
+        LocalDate prefDepartureStartDate = LocalDate.of(year, month, dayOfMonth);
+        LocalDateTime prefDepartureStartDateTime = LocalDateTime.of(prefDepartureStartDate, prefDepartureStartTime);
+        ZonedDateTime prefDepartureStartZonedDateTime = ZonedDateTime.of(prefDepartureStartDateTime, ZoneId.of(departureCityTimeZone));
+
+        //preferredEnd
+        LocalTime prefDepartureEndTime = LocalTime.of(preferredDepartureEndHour, 0, 0);
+        LocalDate prefDepartureEndDate = LocalDate.of(year, month, dayOfMonth);
+        LocalDateTime prefDepartureEndDateTime = LocalDateTime.of(prefDepartureEndDate, prefDepartureEndTime);
+        ZonedDateTime prefDepartureEndZonedDateTime = ZonedDateTime.of(prefDepartureEndDateTime, ZoneId.of(departureCityTimeZone));
+
+
         // Step 2: Find departing flights at departureCity
-        List<Flight> allDepartingFlights = allFlights.get(departureCity);
+        List<Flight> allDepartingFlights = allFlights.get(departureCity);//returns a list of flights by departure city
 
         NavigableSet<Flight> departingflights = new TreeSet<>();
 
         // Your code
         // Tip: Methods like isAfter can be used to find flights in the specified user time interval
+        for( Flight flight : allDepartingFlights) {
+            // if(flight isAfter afterprefstarttime && isBefore prefDepEndHour) { add flight to departingflights }
+            if( flight.getDepartureTime().isAfter(prefDepartureStartDateTime) &&
+                flight.getDepartureTime().isBefore(prefDepartureEndDateTime)) {
+                departingflights.add(flight);
+                System.out.println(flight.getFlightNumber());
+            }
+        }
+
+
+
 
 
         // Step 3: Find connecting flights
@@ -47,6 +71,13 @@ public class FlightFinder {
         NavigableSet<Flight> connectingflights = new TreeSet<>();
 
         // Your code
+        for(Flight flight : allConnectingFlights) {
+            if(flight.getDepartureCity().equals(arrivalCity) && flight.getArrivalCity().equals(finalArrivalCity)
+                && flight.getDepartureTime().isAfter(departingflights.first().getArrivalTime().plusHours(2))) {
+                connectingflights.add(flight);
+                System.out.println(flight.getFlightNumber());
+            }
+        }
 
         result.add(departingflights);
         result.add(connectingflights);

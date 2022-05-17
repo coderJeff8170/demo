@@ -1,5 +1,7 @@
 package com.semanticsquare.flight_reservation_system;
 
+import com.semanticsquare.set_demo.Book;
+
 import java.time.LocalDateTime;
 
 public class Flight implements Comparable<Flight> {
@@ -69,7 +71,7 @@ public class Flight implements Comparable<Flight> {
 
     @Override
     public int compareTo(Flight flight) {
-
+        return getFlightNumber().compareTo(flight.getFlightNumber());// string's compareTo
     }
 
 }
